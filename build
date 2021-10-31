@@ -2,4 +2,4 @@
 
 ghc scm.hs
 
-./scm afaf
+./scm 1 2

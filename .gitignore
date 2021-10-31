@@ -1,0 +1,9 @@
+*.hi
+*.o
+scm
+
+*~
+[._]*.sw[a-p]
+.netrwhist
+.DS_Store
+tags
