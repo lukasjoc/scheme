@@ -1,5 +1,0 @@
-#!/bin/bash
-
-ghc scm.hs
-
-./scm 1 2
