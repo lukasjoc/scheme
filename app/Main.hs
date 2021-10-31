@@ -32,7 +32,6 @@ parseString = do
 -- and end with letters symbols, or digits
 parseAtom :: Parser LispVal
 parseAtom = do
-
   -- first letter is letter or symbol
   first <- letter <|> symbol
 
@@ -49,13 +48,13 @@ parseAtom = do
     _ -> Atom atom
 
 
--- match many digits convert to Number ListVal
+-- match many digits convert to ListVal Number
 parseNumber :: Parser LispVal
-parseNumber = liftM (Number . read) $ many1 digit
+parseNumber = many1 digit >>=
+  \num -> return ((Number . read) num)
 
-
+-- the scheme parser
 parseExp :: Parser LispVal
-
 parseExp = parseAtom
   <|> parseString
   <|> parseNumber
@@ -71,11 +70,10 @@ spaces = skipMany1 space
 readExp :: String -> String
 readExp input = case parse parseExp "lisp" input of
   -- either no error
-  Right val -> "Found value: "
+  Right val -> "Match: " ++ input
 
   -- error found in either
   Left err -> "No match: " ++ show err
-
 
 main :: IO ()
 main = do
