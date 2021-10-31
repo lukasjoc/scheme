@@ -78,8 +78,12 @@ parseAtom = do
 
 -- match many digits convert to ListVal Number
 parseNumber :: Parser LispVal
-parseNumber = many1 digit >>=
-  \num -> return ((Number . read) num)
+-- parseNumber = many1 digit >>=
+--  \num -> return ((Number . read) num)
+
+parseNumber = do
+  num <- many digit
+  return ((Number . read) num)
 
 -- the scheme parser
 parseExp :: Parser LispVal
