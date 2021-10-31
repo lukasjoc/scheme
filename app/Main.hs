@@ -20,10 +20,38 @@ symbol = oneOf "!#$%&|*+-/:<=>?@^_~"
 -- defines a string parser
 -- strings are just random charssourounded by
 -- double quote marks
+-- ----------------------------------------------------
+-- | Name  | C-escape  Description                    |
+-- | ----- | --------  ------------------------------ |
+-- | `BEL` | `\a`      Terminal bell                  |
+-- | `BS`  | `\b`      Backspace                      |
+-- | `HT`  | `\t`      Horizontal TAB                 |
+-- | `LF`  | `\n`      Linefeed (newline)             |
+-- | `VT`  | `\v`      Vertical TAB                   |
+-- | `FF`  | `\f`      Formfeed (also: New page `NP`) |
+-- | `CR`  | `\r`      Carriage return                |
+-- | `ESC` | `\e`,`\\` Escape character               |
+-- ----------------------------------------------------
+escaped :: Parser Char
+escaped = do
+  char '\\'
+  x <- oneOf "\\\"abtnvfr"
+  return $ case x of
+    '\\' -> x
+    '"' -> x
+    'a' -> '\a'
+    'b' -> '\b'
+    't' -> '\t'
+    'n' -> '\n'
+    'v' -> '\v'
+    'f' -> '\f'
+    'r' -> '\r'
+  return x
+
 parseString :: Parser LispVal
 parseString = do
   char '"'
-  x <- many (noneOf "\"")
+  x <- many $ escaped <|> noneOf "\"\\"
   char '"'
   return $ String x
 
@@ -76,7 +104,10 @@ readExp input = case parse parseExp "lisp" input of
   Left err -> "No match: " ++ show err
 
 main :: IO ()
-main = do
-  (exp:_) <- getArgs
-  putStrLn (readExp exp)
+--main = do
+--  (exp:_) <- getArgs
+--  putStrLn (readExp exp)
+
+main = getArgs >>= \(exp:_)
+  -> putStrLn (readExp exp)
 
