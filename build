@@ -1,0 +1,5 @@
+#!/bin/bash
+
+ghc scm.hs
+
+./scm afaf
