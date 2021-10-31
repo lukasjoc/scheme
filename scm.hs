@@ -11,4 +11,8 @@ main = do
   let a2 = read(args !! 1) :: Int32
   let result = (+) a1 a2
 
-  putStrLn(show a1 ++ "+" ++ show a2 ++ "=" ++ show result)
+  showresult :: Int32 -> Int32 -> Int32 -> String
+  showresult a b c = show a ++ " + " show b ++ " = " ++ show c
+
+  -- putStrLn(show a1 ++ "+" ++ show a2 ++ "=" ++ show result)
+  putStrLn(showresult)
