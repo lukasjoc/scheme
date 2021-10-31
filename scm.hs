@@ -7,10 +7,19 @@ main :: IO()
 sumAndShowResult :: Int32 -> Int32 -> String
 sumAndShowResult a b = show a ++ " + " ++ show b ++ " = " ++ show ((+) a b)
 
+-- get a number and convert to Int32
+prompt :: String -> IO String
+prompt text = do
+  putStrLn text
+  getLine
+
 main = do
-  args <- getArgs
+  putStrLn "Give me 2 numbers: "
 
-  let a1 = read(args !! 0) :: Int32
-  let a2 = read(args !! 1) :: Int32
+  l1 <- prompt "First Number: "
+  l2 <- prompt "Second Numer: "
 
-  putStrLn(sumAndShowResult a1 a2)
+  let x = read l1 :: Int32
+  let y = read l2 :: Int32
+
+  putStrLn(sumAndShowResult x y)
