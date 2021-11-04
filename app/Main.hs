@@ -90,6 +90,11 @@ parseExp :: Parser LispVal
 parseExp = parseAtom
   <|> parseString
   <|> parseNumber
+  <|> parseQuoted
+  <|> do char '('
+         x <- try parseList <|> parseDottedList
+         char ')'
+         return x
 
 -- define a whitespace parser to
 -- allow one or more spaces
@@ -107,11 +112,28 @@ readExp input = case parse parseExp "lisp" input of
   -- error found in either
   Left err -> "No match: " ++ show err
 
-main :: IO ()
---main = do
---  (exp:_) <- getArgs
---  putStrLn (readExp exp)
+-- parses list parameters seperated by spaces
+parseList :: Parser LispVal
+parseList = liftM List $ sepBy parseExp spaces
 
+-- dotted lists work like normal lists
+-- but indead of naively parsing by spaces
+-- we seperate the head and tail with a dot
+parseDottedList :: Parser LispVal
+parseDottedList = do
+  head <- endBy parseExp spaces
+  tail <- char '.' >> spaces >> parseExp
+  return $ DottedList head tail
+
+-- lists with quotes
+-- like this (quote "coool")
+parseQuoted :: Parser LispVal
+parseQuoted = do
+  char '\''
+  x <- parseExp
+  return $ List [Atom "quote", x]
+
+main :: IO ()
 main = getArgs >>= \(exp:_)
   -> putStrLn (readExp exp)
 
